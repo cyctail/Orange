@@ -1,0 +1,56 @@
+C51 COMPILER V9.59.0.0   FUNCTIONOS                                                        03/03/2021 16:23:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE FUNCTIONOS
+OBJECT MODULE PLACED IN .\OBJ\functionOS.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\FunctionOS\functionOS.c OPTIMIZE(9,SPEED) BROWSE INC
+                    -DIR(.\USER;.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\
+                    -M_Math;.\LIB\DATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\func
+                    -tionOS.lst) TABS(2) OBJECT(.\OBJ\functionOS.obj)
+
+line level    source
+
+   1          #include "FunctionOS.h"
+   2          
+   3          /**/
+   4          void SCANKEY_OSU(){
+   5   1        Scanf_KEY();
+   6   1        Scankey();
+   7   1      }
+   8          /**/
+   9          void SEG_SET_OSU(){
+  10   1        switch(Set_W){
+  11   2          case 0: 
+  12   2            if(set_dis()){
+  13   3              w2=SEG_N%1000/100;w3=SEG_N%100/10;w4=SEG_N%10;
+  14   3            }else{
+  15   3              w1=_NET;w2=_NET;w3=_NET;w4=_NET;f_flag=2;
+  16   3            }
+  17   2          break;
+  18   2          case 1: w1=_P;w2=_NET;w3=_NET;w4=Mode;f_flag=2; break;
+  19   2          case 2: SEG_F_T1(Set_W+8,time_x[Set_W-1],0);f_flag=flag_x[Set_W-1];break;
+  20   2        }
+  21   1        if(LED_ONF)Led(w1,w2,w3,w4,f_flag);
+  22   1        else {Led(_TAP,_TAP,_TAP,_TAP,2);}
+  23   1      }
+  24          /**/
+  25          void MODE_OSU(){
+  26   1        if(Set_W==0){
+  27   2          Scanf_IN();
+  28   2          Mode1();
+  29   2        }
+  30   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    273    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

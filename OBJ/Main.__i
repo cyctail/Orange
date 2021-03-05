@@ -1,0 +1,1 @@
+"USER\Main\Main.c" OPTIMIZE (9,SPEED) BROWSE INCDIR(.\USER;.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\M_Math;.\LIB\DATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\Main.lst) TABS (2) OBJECT(.\OBJ\Main.obj)

@@ -1,0 +1,44 @@
+C51 COMPILER V9.60.0.0   DAAT                                                              10/21/2020 11:39:43 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DAAT
+OBJECT MODULE PLACED IN .\OBJ\daat.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\Data\daat.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER;.
+                    -\LIB\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey;.\LIB
+                    -\SEG;.\LIB\Tick;.\LIB\UART1;.\LIB\Data) DEBUG OBJECTEXTEND PRINT(.\Listings\daat.lst) TABS(2) OBJECT(.\OBJ\daat.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          
+   3          uint    xdata time_x[TIME_NUM+1];   
+   4          uchar xdata flag_x[TIME_NUM+1];
+   5          
+   6          uchar w1,w2,w3,w4;
+   7          uchar LED_ONF=1;
+   8          uint SEG_N;
+   9          bit DATA_SAVE_FLAG=0;
+  10          uchar Mode;
+  11          uchar Set_W;
+  12          
+  13          
+  14          uchar stat_mode;
+  15          bit Start1,Start2;
+  16          struct Tick_struct xdata t1;
+  17          // struct Tick_struct xdata t2;
+  18          
+  19          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     13    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

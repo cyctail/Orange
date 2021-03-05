@@ -1,0 +1,64 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              03/03/2021 16:23:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\OBJ\Main.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE USER\Main\Main.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER;
+                    -.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\M_Math;.\LI
+                    -B\DATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\Main.lst) TABS(
+                    -2) OBJECT(.\OBJ\Main.obj)
+
+line level    source
+
+   1          /*
+   2          *                           ___________
+   3          *                         /            \
+   4          *                        \____________/
+   5          *                        |           |
+   6          *                       /            \
+   7          *                     /              \
+   8          *                    |               |
+   9          *                   |               |
+  10          *                  |               |
+  11          *                 |               |
+  12          *                 \______________/
+  13          *                 -----------------  
+  14          */
+  15          
+  16          #include "main.h"
+  17          
+  18          /**/
+  19          void F_ITEM(){
+  20   1        Scanf_KEY();
+  21   1        Scanf_KEY();
+  22   1        Scanf_IN();
+  23   1        Scanf_IN();
+  24   1      }
+  25          /**/
+  26          void SYS_INIT(){
+  27   1        IO_INIT();
+  28   1        set_io_port_mode(2,TW);
+  29   1        OSAL_INIT();
+  30   1      }
+  31          /**/
+  32          void main(){
+  33   1        SYS_INIT();
+  34   1        DATA_INIT();
+  35   1        F_ITEM();
+  36   1        OSAL_FUNCTION();  //F_RUN
+  37   1      } //mian()
+  38          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     37    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

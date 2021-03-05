@@ -1,0 +1,101 @@
+C51 COMPILER V9.57.0.0   SEG_8                                                             08/15/2020 18:26:50 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEG_8
+OBJECT MODULE PLACED IN .\OBJ\SEG_8.obj
+COMPILER INVOKED BY: D:\sofeware\keil 5\C51\BIN\C51.EXE LIB\SEG_8.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\LIB) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\SEG_8.lst) TABS(2) OBJECT(.\OBJ\SEG_8.obj)
+
+line level    source
+
+   1          #include "SEG_8.h"
+   2          
+   3          code uchar seg7code[ ]={
+   4          0x3f,//0
+   5          0x06, //1
+   6          0x5b, //2
+   7          0x4f, //3
+   8          0x66, //4
+   9          0x6d, //5
+  10          0x7d, //6
+  11          0x07, //7
+  12          0x7f, //8
+  13          0x6f, //9
+  14          0x73,  //P  10
+  15          0x40, //-  11
+  16          0x00,   //不显示 12
+  17          0x77,  //A  13  
+  18          0x7c,  //b  14
+  19          0x39,  //c  15
+  20          0x5e,//d   16
+  21          0xc0,
+  22          }; //显示段码 数码管字跟 
+  23          /**
+  24          *四位数码管显示
+  25          **f_flag:小数点
+  26          ***0：第二位；
+  27          ***1：第三位；
+  28          ***2：无小数点；
+  29          ***3：第四位；
+  30          **/    
+  31          uchar f_flag1,f_flag2;
+  32          uchar w;
+  33          void Led(uchar led_a1,uchar led_a2,uchar led_a3,uchar led_a4,uchar led_a5,uchar led_a6,uchar led_a7,uchar 
+             -led_a8){    
+  34   1        switch(w){
+  35   2          case 0: 
+  36   2            SEG_IO=0;L1=0;L2=1;L3=1;L4=1;L5=1;L6=1;L7=1;L8=1;
+  37   2            SEG_IO=seg7code[led_a1];w = 1;
+  38   2          break;
+  39   2          case 1:
+  40   2            SEG_IO=0;L1=1;L2=0;L3=1;L4=1;L5=1;L6=1;L7=1;L8=1;w = 2;
+  41   2              if(f_flag1==0)SEG_IO=seg7code[led_a2]|0x80; 
+  42   2              else SEG_IO=seg7code[led_a2];
+  43   2          break;
+  44   2          case 2:
+  45   2            SEG_IO=0;L1=1;L2=1;L3=0;L4=1;L5=1;L6=1;L7=1;L8=1;w = 3;
+  46   2            if(f_flag1==1)SEG_IO=seg7code[led_a3]|0x80; 
+  47   2            else SEG_IO=seg7code[led_a3]; 
+  48   2          break;
+  49   2          case 3:
+  50   2            SEG_IO=0;L1=1;L2=1;L3=1;L4=0;L5=1;L6=1;L7=1;L8=1;w = 4;
+  51   2            if(f_flag1==3)SEG_IO=seg7code[led_a4]|0x80; 
+  52   2            else SEG_IO=seg7code[led_a4];
+  53   2          break;
+C51 COMPILER V9.57.0.0   SEG_8                                                             08/15/2020 18:26:50 PAGE 2   
+
+  54   2          case 4:
+  55   2            SEG_IO=0;L1=1;L2=1;L3=1;L4=1;L5=0;L6=1;L7=1;L8=1;w = 5;
+  56   2            SEG_IO=seg7code[led_a5];
+  57   2          break;
+  58   2          case 5:
+  59   2            SEG_IO=0;L1=1;L2=1;L3=1;L4=1;L5=1;L6=0;L7=1;L8=1;w = 6;
+  60   2            if(f_flag2==3)SEG_IO=seg7code[led_a6]|0x80; 
+  61   2            else SEG_IO=seg7code[led_a6];
+  62   2          break;
+  63   2          case 6:
+  64   2            SEG_IO=0;L1=1;L2=1;L3=1;L4=1;L5=1;L6=1;L7=0;L8=1;w = 7;
+  65   2            if(f_flag2==3)SEG_IO=seg7code[led_a7]|0x80; 
+  66   2            else SEG_IO=seg7code[led_a7];
+  67   2          break;
+  68   2          case 7:
+  69   2            SEG_IO=0;L1=1;L2=1;L3=1;L4=1;L5=1;L6=1;L7=1;L8=0;w = 0;
+  70   2            if(f_flag2==3)SEG_IO=seg7code[led_a8]|0x80; 
+  71   2            else SEG_IO=seg7code[led_a8];
+  72   2          break;
+  73   2        }
+  74   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    281    ----
+   CONSTANT SIZE    =     18    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

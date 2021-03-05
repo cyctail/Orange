@@ -1,0 +1,112 @@
+C51 COMPILER V9.60.0.0   DATAST                                                            01/16/2021 17:14:09 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DATAST
+OBJECT MODULE PLACED IN .\OBJ\DATAST.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\DATAST\DATAST.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\US
+                    -ER;.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\Mode;.\LIB\OSAL;.\LIB\Scan;.\LIB\Scankey;.\LIB\SEG;.\LIB\Tick;.\LIB\H;
+                    -.\LIB\M_IO;.\LIB\M_Math;.\LIB\DATAST;.\LIB\IIC) DEBUG OBJECTEXTEND PRINT(.\Listings\DATAST.lst) TABS(2) OBJECT(.\OBJ\DAT
+                    -AST.obj)
+
+line level    source
+
+   1          #include "DATAST.h"
+   2          struct DATA_STRUCT xdata stl[STL_NUM];
+   3          uint STL_HEAD=STL_NULL;
+   4          uint STL_TAIL=STL_NULL;
+   5          
+   6          /*链表初始化*/
+   7          void STL_init(){
+   8   1          uint i;
+   9   1          for(i=0;i<STL_NUM;i++){
+  10   2              stl[i].used=0;
+  11   2          }
+  12   1      }
+  13          /*获取一个空的节点*/
+  14          uchar get_null_id(){
+  15   1          uint i;
+  16   1          for(i=0;i<STL_NUM;i++){
+  17   2              if(stl[i].used==0)return i;
+  18   2          }
+  19   1        return STL_NULL;
+  20   1      }
+  21          /*节点添加-新建*/
+  22          uint STL_Add_Tail(){
+  23   1          uint zc_id;
+  24   1          if(STL_HEAD==STL_NULL){
+  25   2              //creat the first st_line
+  26   2              STL_HEAD=get_null_id();
+  27   2              stl[STL_HEAD].last_id    =   STL_NULL;
+  28   2              stl[STL_HEAD].next_id    =   STL_NULL;
+  29   2              stl[STL_HEAD].used       =   1;
+  30   2              STL_TAIL                 =   STL_HEAD;
+  31   2              return STL_HEAD;
+  32   2          }else{
+  33   2              //creat next stl
+  34   2              zc_id=get_null_id();
+  35   2              stl[zc_id].last_id       =   STL_TAIL;
+  36   2              stl[STL_TAIL].next_id    =   zc_id;
+  37   2              stl[zc_id].next_id       =   STL_NULL;
+  38   2              stl[zc_id].used          =   1;
+  39   2              STL_TAIL                 =   zc_id;
+  40   2              return zc_id;
+  41   2          }
+  42   1      }
+  43          /*删除某个节点所有数据*/
+  44          void delate_stl_data(sim_id){
+  45   1          stl[sim_id].last_id  =   STL_NULL;
+  46   1          stl[sim_id].next_id  =   STL_NULL;
+  47   1          stl[sim_id].used     =   0;     
+  48   1          stl[sim_id].mdata    =   0;
+  49   1      }
+  50          /*删除某个节点*/
+  51          void STL_DEL_ONCE(uint sim_id){
+  52   1          if(sim_id == STL_HEAD){
+C51 COMPILER V9.60.0.0   DATAST                                                            01/16/2021 17:14:09 PAGE 2   
+
+  53   2              //if delate line_head
+  54   2              STL_HEAD=stl[STL_HEAD].next_id;
+  55   2              delate_stl_data(sim_id);
+  56   2          }else{
+  57   2              //if delate line_tail
+  58   2              if(sim_id == STL_TAIL)STL_TAIL=stl[sim_id].last_id;
+  59   2              //creat a new link
+  60   2              stl[stl[sim_id].last_id].next_id  =   stl[sim_id].next_id;
+  61   2              //delate this stl
+  62   2              delate_stl_data(sim_id);
+  63   2          }
+  64   1      }
+  65          /*数据比较**默认比较一个uint数据，其他数据需要修改本项*/
+  66          uchar stl_data_cp(uint sim_id,uint fd){
+  67   1          if(stl[sim_id].mdata == fd){
+  68   2              return 1;
+  69   2          }
+  70   1          return 0;
+  71   1      }
+  72          /*查找一个数据*/
+  73          uchar Find_STL_data(uint fd){
+  74   1          uint i=STL_HEAD;
+  75   1          while(i != STL_NULL){       //遍历整个链表
+  76   2              if(stl_data_cp(i,fd)){
+  77   3                  return 1;
+  78   3              }
+  79   2              i=stl[i].next_id;
+  80   2          }
+  81   1          return 0;
+  82   1      }
+  83          /**/
+  84          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    390    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    500    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

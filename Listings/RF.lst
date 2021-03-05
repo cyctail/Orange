@@ -1,0 +1,210 @@
+C51 COMPILER V9.60.0.0   RF                                                                10/27/2020 09:36:28 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE RF
+OBJECT MODULE PLACED IN .\OBJ\RF.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\RF\RF.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER;.\LIB
+                    -\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey;.\LIB\SEG
+                    -;.\LIB\Tick;.\LIB\UART1;.\LIB\Data) DEBUG OBJECTEXTEND PRINT(.\Listings\RF.lst) TABS(2) OBJECT(.\OBJ\RF.obj)
+
+line level    source
+
+   1          #include "main.h" //
+   2          
+   3          #ifndef uchar
+              #define uchar unsigned char
+              #endif
+   6          #ifndef uint
+              #define uint unsigned int
+              #endif
+   9          #ifndef ulong
+              #define ulong unsigned long
+              #endif
+  12          
+  13          
+  14          
+  15          #define RF_HEAD_MIN 90
+  16          #define RF_HEAD_MAX 130
+  17          //-
+  18          #define RF_0_MIN 1
+  19          #define RF_0_MAX 8
+  20          //-
+  21          #define RF_1_MIN 10
+  22          #define RF_1_MAX 20
+  23          
+  24          //-
+  25          #define RF_DATA_LENGHT 24
+  26          // bit RF_IO;                          //模拟IO口
+  27          sbit RF_IO = P3^2;
+  28          
+  29          bit RF_last_flag;                   //上一个电平状态标志位
+  30          uint RF_tick;                       //电平时间暂存器
+  31          uint RF_low_time;                   //高低电平时间
+  32          
+  33          uchar xdata RF_analysis_stat=0;   //接收电平解析流程暂存
+  34          ulong xdata RF_data;            //接收遥控数据暂存
+  35          uchar RF_rnum;                  //已接收电平数量
+  36          /*供外部使用变量*/
+  37          bit RF_K;               //按键状态<虚拟>
+  38          #define RF_K_KEEP 200
+  39          uchar RF_delay;         //按键状态持续时间
+  40          uchar RF_same_key;      //相同KEY_N次数暂存          
+  41          /*供外部使用变量*/
+  42          ulong xdata RF_ID;            //ID
+  43          uchar RF_KEY;           //KEY_N
+  44          
+  45          
+  46          #define RF_SAVE_NUM 3
+  47          ulong xdata RF_SAVE_ID[RF_SAVE_NUM];
+  48          
+  49          
+  50          /*仅获取单电平信息*/
+  51          uchar Tick_RF(){
+  52   1          if(RF_IO){
+  53   2              if(!RF_last_flag){
+C51 COMPILER V9.60.0.0   RF                                                                10/27/2020 09:36:28 PAGE 2   
+
+  54   3                  RF_low_time = RF_tick;
+  55   3                  RF_last_flag = 1;
+  56   3            return 1;
+  57   3              }
+  58   2          }else{
+  59   2              if(RF_last_flag){
+  60   3                  RF_tick = 0;
+  61   3                  RF_last_flag = 0;
+  62   3              }
+  63   2          }
+  64   1          if(RF_tick<65535)RF_tick++;
+  65   1          return 0;
+  66   1      }
+  67          /*
+  68          *解析RF字节数据
+  69          **整组数据传输完成后返回 1
+  70          **遥控码值存储在 RF_data 中
+  71          */
+  72          uchar Analysis_RF(){//RF_analysis_stat=1;
+  73   1          switch(RF_analysis_stat){
+  74   2              case 0: 
+  75   2                  if(RF_low_time>=RF_HEAD_MIN){// && RF_low_time<=RF_HEAD_MAX
+  76   3                      RF_analysis_stat=1;
+  77   3                      RF_rnum=0;//ccvvbb=1;
+  78   3                  }
+  79   2              break;
+  80   2              case 1: 
+  81   2                  if(RF_low_time>=RF_0_MIN && RF_low_time<=RF_0_MAX){
+  82   3                      RF_data = (RF_data<<1)+1;
+  83   3                      RF_rnum++;
+  84   3                  }else if(RF_low_time>=RF_1_MIN && RF_low_time<=RF_1_MAX){
+  85   3                      RF_data = (RF_data<<1);
+  86   3                      RF_rnum++;
+  87   3                  }else{//数据均不正确，接收复位
+  88   3                      RF_rnum=0;RF_analysis_stat=0;
+  89   3                  }
+  90   2                  if(RF_rnum>=RF_DATA_LENGHT){    //数据接收完成，复位
+  91   3                      RF_rnum=0;RF_analysis_stat=0;
+  92   3                      return 1;
+  93   3                  }
+  94   2              break;
+  95   2          }
+  96   1          return 0;
+  97   1      }
+  98          /*校验 KEY 值*/
+  99          uchar Proof_RF(uchar RK){
+ 100   1          if(RK==0x01)return 1;
+ 101   1          if(RK==0x02)return 1;
+ 102   1          if(RK==0x04)return 1;
+ 103   1          if(RK==0x08)return 1;
+ 104   1          return 0;
+ 105   1      }
+ 106          /*拆分码值*/
+ 107          void Split_RF(ulong RF_Sdata){
+ 108   1          RF_ID = (RF_Sdata&0x00fffff0);
+ 109   1          RF_KEY = (uchar)(RF_Sdata&0x0000000f);
+ 110   1      }
+ 111          /*设置遥控按键按下*/
+ 112          void RF_Press(){
+ 113   1          RF_K = 1;RF_delay = 0;
+ 114   1      }
+ 115          /*设置遥控按键松开*/
+C51 COMPILER V9.60.0.0   RF                                                                10/27/2020 09:36:28 PAGE 3   
+
+ 116          void RF_Lease(){
+ 117   1          RF_K = 0;RF_delay = 0;
+ 118   1      }
+ 119          
+ 120          
+ 121          /**/
+ 122          uchar RF_cmp_timesRF_cmp_times=0;
+ 123          bit RF_learn=0;
+ 124          uchar RF_HLEARN=0;
+ 125          uchar RF_compart(){
+ 126   1      
+ 127   1          if(RF_ID == RF_SAVE_ID[RF_cmp_timesRF_cmp_times])return 1;        //保留上一次的结果，长时�
+             -��按下时减少资源消耗（也许）
+ 128   1      
+ 129   1          for(RF_cmp_timesRF_cmp_times=0;RF_cmp_timesRF_cmp_times<RF_HLEARN;RF_cmp_timesRF_cmp_times++){
+ 130   2              if((RF_ID) == RF_SAVE_ID[1])return 1;
+ 131   2          }
+ 132   1          return 0;
+ 133   1      }
+ 134          /*
+ 135          **调用函数
+ 136          ***使用环境：定时器中断 <优先级高>
+ 137          ***定时 x_us
+ 138          */
+ 139          void _RF_ISR(){
+ 140   1          if(++RF_delay>RF_K_KEEP){       //按键持续时间，使长按时按键能够保持到下一次按�
+             -�接收成功
+ 141   2              RF_Lease();
+ 142   2          }
+ 143   1          if(Tick_RF()){//--获得一次电平变化信号的电平长度
+ 144   2              if(Analysis_RF()){//--至此获得一个完整的码值
+ 145   3                  Split_RF(RF_data);      //--拆分信号，获得 ID 和 KEY_N
+ 146   3                  if(Proof_RF(RF_KEY)){RF_same_key++;}else RF_same_key=0;   //校验 KEY_N,同时提供变量 RF
+             -_same_key 用于校验
+ 147   3                  if(RF_same_key>=2){RF_same_key=0;       //如果同一个按键持续检测 N 次，即判定�
+             -��按键正确
+ 148   4                      if(RF_learn){RF_learn=0;
+ 149   5                          RF_SAVE_ID[RF_HLEARN++] = RF_ID;
+ 150   5                      }else{
+ 151   5                          if(RF_compart())RF_Press();
+ 152   5                      }  
+ 153   4                  }
+ 154   3              }
+ 155   2          }
+ 156   1      }
+ 157          
+ 158          /*
+ 159          *获取遥控按键 <供外部使用>
+ 160          **按键判断没有按下时也返回 0
+ 161          */
+ 162          uchar Get_Key(){
+ 163   1          if(RF_KEY == 0x01)RF_learn=1;
+ 164   1          if(RF_K){
+ 165   2              // if(RF_compart){
+ 166   2                  switch(RF_KEY){
+ 167   3                      case 0x01: return 1; break;
+ 168   3                      case 0x02: return 2; break;
+ 169   3                      case 0x04: return 3; break;
+ 170   3                      case 0x08: return 4; break;
+ 171   3                  }
+ 172   2              // }
+ 173   2          }
+C51 COMPILER V9.60.0.0   RF                                                                10/27/2020 09:36:28 PAGE 4   
+
+ 174   1          return 0;
+ 175   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    529    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     21    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

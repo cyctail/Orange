@@ -1,0 +1,117 @@
+C51 COMPILER V9.60.0.0   UART_1                                                            10/27/2020 09:07:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE UART_1
+OBJECT MODULE PLACED IN .\OBJ\uart_1.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\UART1\uart_1.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USE
+                    -R;.\LIB\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey;.\
+                    -LIB\SEG;.\LIB\Tick;.\LIB\UART1;.\LIB\Data) DEBUG OBJECTEXTEND PRINT(.\Listings\uart_1.lst) TABS(2) OBJECT(.\OBJ\uart_1.o
+                    -bj)
+
+line level    source
+
+   1          #include "uart_1.h"
+   2          #include "intrins.h"
+   3          
+   4          #define FOSC            11059200UL
+   5          #define BRT             (65536 - FOSC / 9600 / 4)
+   6          
+   7          #define Start_Str '*'     //起始标识符
+   8          #define End_Str   '#'     //结束标识符
+   9          
+  10          bit busy;
+  11          uchar xdata buffer[16];
+  12          
+  13          bit rx_flag;
+  14          uchar xdata wptr,rd;
+  15          
+  16          uchar xdata R_DATA[10];   //读取的数据存储，可用于外部调用
+  17          /*
+  18          *数组清除函数
+  19          *--复位值为0
+  20          */
+  21          void clean_buf(uchar* c_buf){
+  22   1        while(*c_buf)*c_buf++=0;
+  23   1      }
+  24          
+  25          /*
+  26          *利用标识符来确认读取的数据范围
+  27          **在两个标志位之间的数据为有效数据
+  28          **标志符不能使用可能会被发送的字符
+  29          ***数据读取完rx_flag将会被置1
+  30          ***--#1可选择读取后等待数据处理完再读取
+  31          ***--#2或者读取完马上可以
+  32          ***--#0读取完后马上重新读取，并且不会清除已读取数据，新的数据会从头开始覆
+             -盖旧的数据
+  33          */
+  34          uchar r_Start_flag,r_num;//读取开始标志位，读取数据量
+  35          void get_uart_data(uchar in_buff){
+  36   1        if(rx_flag){clean_buf(R_DATA);rx_flag=0;}
+  37   1        if(!rx_flag)
+  38   1          switch(r_Start_flag){
+  39   2            case 0: 
+  40   2              if(in_buff==Start_Str){r_Start_flag=1;r_num=0;}
+  41   2            break;
+  42   2            case 1: 
+  43   2              if(in_buff==End_Str){r_Start_flag=0;rx_flag=1;}else R_DATA[r_num++]=in_buff;
+  44   2            break;
+  45   2          }
+  46   1        
+  47   1      }
+  48          
+  49          char putchar (uchar c){
+  50   1      UartSend(c);
+  51   1        return c;
+C51 COMPILER V9.60.0.0   UART_1                                                            10/27/2020 09:07:37 PAGE 2   
+
+  52   1      }
+  53          void UartIsr() interrupt 4{
+  54   1        if (TI){
+  55   2          TI = 0;
+  56   2          busy = 0;
+  57   2        }
+  58   1        if (RI){
+  59   2          RI = 0;
+  60   2          buffer[wptr++] = SBUF;
+  61   2          get_uart_data(SBUF);
+  62   2          wptr &= 0x0f;
+  63   2        }
+  64   1      }
+  65          
+  66          void UartInit(){
+  67   1        SCON |= 0x50;
+  68   1        T2L = BRT;
+  69   1        T2H = BRT >> 8;
+  70   1        AUXR |= 0x15;
+  71   1        busy = 0;
+  72   1        ES = 1;
+  73   1        EA = 1;
+  74   1      }
+  75          
+  76          void UartSend(uchar dat){
+  77   1        while (busy);
+  78   1        busy = 1;
+  79   1        SBUF = dat;
+  80   1      }
+  81          
+  82          void UartSendStr(uchar *p){
+  83   1        while (*p){
+  84   2          UartSend(*p++);
+  85   2        }
+  86   1      }
+  87          
+  88          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    251    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     28    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,15 @@
+".\OBJ\data.obj",
+".\OBJ\functionOS.obj",
+".\OBJ\Mode1.obj",
+".\OBJ\scankey.obj",
+".\OBJ\Scanf.obj",
+".\OBJ\SEG.obj",
+".\OBJ\eeprom.obj",
+".\OBJ\STARTUP.obj",
+".\OBJ\OSAL.obj",
+".\OBJ\Main.obj",
+".\OBJ\tickt.obj",
+".\OBJ\MIO.obj" 
+TO ".\OBJ\STC" 
+PRINT(".\Listings\STC.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 

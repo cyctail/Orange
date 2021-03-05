@@ -1,0 +1,88 @@
+C51 COMPILER V9.60.0.0   SYS_UART1                                                         10/28/2020 11:27:00 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE SYS_UART1
+OBJECT MODULE PLACED IN .\OBJ\sys_uart1.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\UART1\sys_uart1.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\
+                    -USER;.\LIB\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey
+                    -;.\LIB\SEG;.\LIB\Tick;.\LIB\UART1;.\LIB\Data;.\LIB\FunctionOS;.\LIB\Mine_UART) DEBUG OBJECTEXTEND PRINT(.\Listings\sys_u
+                    -art1.lst) TABS(2) OBJECT(.\OBJ\sys_uart1.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          //#include "muart.h"
+   3          #include "intrins.h"
+   4          
+   5          #define FOSC            11059200UL
+   6          #define BRT             (65536 - FOSC / 9600 / 4)
+   7          
+   8          bit busy;
+   9          uchar xdata buffer[16];
+  10          uchar xdata wptr;
+  11          
+  12          char putchar(char c){
+  13   1        UartSend(c);
+  14   1        return c;
+  15   1      }
+  16          
+  17          void UartIsr() interrupt 4
+  18          {
+  19   1          if (TI)
+  20   1          {
+  21   2              TI = 0;
+  22   2              busy = 0;
+  23   2          }
+  24   1          if (RI)
+  25   1          {
+  26   2              RI = 0;
+  27   2              UART_Analysis(SBUF);
+  28   2              buffer[wptr++] = SBUF;
+  29   2              wptr &= 0x0f;
+  30   2          }
+  31   1      }
+  32          
+  33          void UartInit()
+  34          {
+  35   1          SCON = 0x50;
+  36   1          T2L = BRT;
+  37   1          T2H = BRT >> 8;
+  38   1          AUXR |= 0x15;
+  39   1          wptr = 0x00;
+  40   1          busy = 0;
+  41   1          ES = 1;
+  42   1          EA = 1;
+  43   1      }
+  44          
+  45          void UartSend(char dat)
+  46          {
+  47   1          while (busy);
+  48   1          busy = 1;
+  49   1          SBUF = dat;
+  50   1      }
+  51          
+  52          void UartSendStr(char *p)
+C51 COMPILER V9.60.0.0   SYS_UART1                                                         10/28/2020 11:27:00 PAGE 2   
+
+  53          {
+  54   1          while (*p)
+  55   1          {
+  56   2              UartSend(*p++);
+  57   2          }
+  58   1      }
+  59          
+  60          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    177    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     17    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

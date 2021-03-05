@@ -1,0 +1,47 @@
+C51 COMPILER V9.60.0.0   TIME1                                                             10/27/2020 09:41:07 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TIME1
+OBJECT MODULE PLACED IN .\OBJ\time1.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\Time1\time1.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER
+                    -;.\LIB\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey;.\L
+                    -IB\SEG;.\LIB\Tick;.\LIB\UART1;.\LIB\Data) DEBUG OBJECTEXTEND PRINT(.\Listings\time1.lst) TABS(2) OBJECT(.\OBJ\time1.obj)
+
+line level    source
+
+   1          #include "main.h"
+   2          
+   3          
+   4          /*定时器1*/
+   5          void Timer1_Init(){
+   6   1        TMOD = 0x00;    //模式0
+   7   1        AUXR |= 0x40;   //定时器时钟1T模式
+   8   1        TMOD &= 0x0F;   //设置定时器模式
+   9   1        TL1 = 0xAE;     //65536-11.0592M/12/1000
+  10   1        TH1 = 0xFB;
+  11   1        TR1 = 1;      //启动定时器
+  12   1        ET1 = 1;      //使能定时器中断
+  13   1        EA = 1;
+  14   1      }
+  15          
+  16          /**/
+  17          #if TIMER1  
+*** WARNING C322 IN LINE 17 OF LIB\Time1\time1.c: unknown identifier
+              void TM1_Isr() interrupt 3
+              {
+              }
+              #endif
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     22    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

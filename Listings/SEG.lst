@@ -1,0 +1,103 @@
+C51 COMPILER V9.59.0.0   SEG                                                               03/03/2021 16:20:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SEG
+OBJECT MODULE PLACED IN .\OBJ\SEG.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\SEG\SEG.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER;.\L
+                    -IB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\M_Math;.\LIB\D
+                    -ATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\SEG.lst) TABS(2) O
+                    -BJECT(.\OBJ\SEG.obj)
+
+line level    source
+
+   1          #include "SEG.h"
+   2          
+   3          code uchar seg7code[ ]={//显示段码 数码管字跟 
+   4          0x3f, //0
+   5          0x06, //1
+   6          0x5b, //2
+   7          0x4f, //3
+   8          0x66, //4
+   9          0x6d, //5
+  10          0x7d, //6
+  11          0x07, //7
+  12          0x7f, //8
+  13          0x6f, //9
+  14          0x77, //A 10  
+  15          0x7c, //b 11
+  16          0x39, //c 12
+  17          0x5e, //d 13
+  18          0x73, //P 14
+  19          0x40, //_NET  15
+  20          0x00, //_TAP  16
+  21          0xc0,
+  22          };
+  23          /**
+  24          *四位数码管显示
+  25          **f_flag:小数点
+  26          ***0：第二位；
+  27          ***1：第三位；
+  28          ***2：无小数点；
+  29          ***3：第四位；
+  30          **/    
+  31          
+  32          /**/
+  33          uchar xdata f_flag;   //小数点控制
+  34          uchar xdata seg_w=0;  //位选控制
+  35          void Led(uchar a,uchar b,uchar c,uchar d,uchar seg_flag){ 
+  36   1        uchar ZC_sdata,Dis_Dot;
+  37   1        L1=1;L2=1;L3=1;L4=1;
+  38   1        switch(seg_w){
+  39   2          case 0: L1=0; seg_w++; ZC_sdata=a; Dis_Dot=255; break;
+  40   2          case 1: L2=0; seg_w++; ZC_sdata=b; Dis_Dot=0;   break;
+  41   2          case 2: L3=0; seg_w++; ZC_sdata=c; Dis_Dot=1;   break;
+  42   2          case 3: L4=0; seg_w=0; ZC_sdata=d; Dis_Dot=3;   break;
+  43   2        }
+  44   1        if(seg_flag==Dis_Dot)SEG_IO=seg7code[ZC_sdata]|0x80;else SEG_IO=seg7code[ZC_sdata];
+  45   1      }
+  46          
+  47          
+  48          
+  49          /**/ 
+  50          uchar xdata S_Flash=0;
+  51          uchar xdata w1,w2,w3,w4;
+  52          void SEG_Flash(uchar a,uchar b,uchar c,uchar d,bit flash1,bit flash2,bit flash3,bit flash4){
+C51 COMPILER V9.59.0.0   SEG                                                               03/03/2021 16:20:05 PAGE 2   
+
+  53   1        if(++S_Flash>=100)S_Flash=0;
+  54   1        if(flash1)w1=a;else{if(S_Flash<50)w1=a;else w1=_TAP;}
+  55   1        if(flash2)w2=b;else{if(S_Flash<50)w2=b;else w2=_TAP;}
+  56   1        if(flash3)w3=c;else{if(S_Flash<50)w3=c;else w3=_TAP;}
+  57   1        if(flash4)w4=d;else{if(S_Flash<50)w4=d;else w4=_TAP;}
+  58   1      }
+  59          /**/
+  60          void SEG_F_T1(uchar seg_head,uint seg_data,uchar fnum){
+  61   1        uchar fa1,fa2,fa3,fa4;
+  62   1        bit fl1,fl2,fl3,fl4;
+  63   1        fa1=seg_data%10000/1000;
+  64   1        fa2=seg_data%1000/100;
+  65   1        fa3=seg_data%100/10;
+  66   1        fa4=seg_data%10;
+  67   1        switch(fnum){
+  68   2          case 0: fl1=0;fl2=0;fl3=0;fl4=0; break;
+  69   2          case 1: fa1=seg_head;fl1=1;fl2=0;fl3=0;fl4=0; break;
+  70   2          case 2: fa2=seg_head;fl1=0;fl2=1;fl3=0;fl4=0; break;
+  71   2          case 3: fa3=seg_head;fl1=0;fl2=0;fl3=1;fl4=0; break;
+  72   2          case 4: fa4=seg_head;fl1=0;fl2=0;fl3=0;fl4=1; break;
+  73   2        }
+  74   1        SEG_Flash(fa1,fa2,fa3,fa4,fl1,fl2,fl3,fl4);
+  75   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    402    ----
+   CONSTANT SIZE    =     18    ----
+   XDATA SIZE       =      7    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       8
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

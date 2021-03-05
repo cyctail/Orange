@@ -1,0 +1,47 @@
+C51 COMPILER V9.59.0.0   MODE1                                                             03/03/2021 16:23:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MODE1
+OBJECT MODULE PLACED IN .\OBJ\Mode1.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE USER\Mode\Mode1.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER
+                    -;.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\M_Math;.\L
+                    -IB\DATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\Mode1.lst) TAB
+                    -S(2) OBJECT(.\OBJ\Mode1.obj)
+
+line level    source
+
+   1          #include "Mode1.h"
+   2          uchar set_dis(){
+   3   1        uchar i;
+   4   1        for(i=0;i<TICK_NUM;i++){
+   5   2          if(get_TS(i)==TRUN){SEG_N=Ts[i].time;f_flag=Ts[i].flag;w1=10+i;return 1;}
+   6   2        }
+   7   1          return 0;
+   8   1      }
+   9          /**/
+  10          void  Mode1(){
+  11   1        if(IN1_PRESS){
+  12   2          Set_SIM_TICK(0,NULL,NULL,NULL,6,0,4,TRUN);
+  13   2          OUT1=ON;
+  14   2        }
+  15   1        if(READ_T(0)){
+  16   2          OUT1=OFF;
+  17   2        }
+  18   1        set_dis();
+  19   1      }
+  20          
+  21          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    138    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

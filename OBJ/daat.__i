@@ -1,0 +1,1 @@
+"LIB\Data\daat.c" OPTIMIZE (9,SPEED) BROWSE INCDIR(.\USER;.\LIB\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey;.\LIB\SEG;.\LIB\Tick;.\LIB\UART1;.\LIB\Data) DEBUG OBJECTEXTEND PRINT(.\Listings\daat.lst) TABS (2) OBJECT(.\OBJ\daat.obj)

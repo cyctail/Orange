@@ -1,0 +1,25 @@
+C51 COMPILER V9.57.0.0   ENCODER                                                           08/15/2020 18:26:50 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE ENCODER
+OBJECT MODULE PLACED IN .\OBJ\encoder.obj
+COMPILER INVOKED BY: D:\sofeware\keil 5\C51\BIN\C51.EXE LIB\encoder.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\LIB) DEBUG OBJEC
+                    -TEXTEND PRINT(.\Listings\encoder.lst) TABS(2) OBJECT(.\OBJ\encoder.obj)
+
+line level    source
+
+   1          #include "encoder.h"
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

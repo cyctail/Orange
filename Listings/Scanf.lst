@@ -1,0 +1,101 @@
+C51 COMPILER V9.59.0.0   SCANF                                                             03/03/2021 16:20:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SCANF
+OBJECT MODULE PLACED IN .\OBJ\Scanf.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\Scan\Scanf.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\USER;
+                    -.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\M_Math;.\LI
+                    -B\DATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\Scanf.lst) TABS
+                    -(2) OBJECT(.\OBJ\Scanf.obj)
+
+line level    source
+
+   1          #include "Scanf.h"
+   2          
+   3          #ifdef DEF_IN_SCANF
+   4          bit IN1_Now,IN1_L;
+   5          bit IN2_Now,IN2_L; 
+   6          #if USE_KEY_TICK
+              uint xdata IN1_NT,IN1_OT;
+              uint xdata IN2_NT,IN2_OT;
+              #endif
+  10          void  Scanf_IN(){ 
+  11   1        IN1_L = IN1_Now;  IN1_Now = IN1;//检测输入 
+  12   1        IN2_L = IN2_Now;  IN2_Now = IN2;//检测输入 
+  13   1        //Scan_RF();
+  14   1        #if USE_KEY_TICK
+                if(IN1_NT<60000)IN1_NT++;
+                if(IN2_NT<60000)IN2_NT++;
+                if(IN1_PRESS || IN1_LEASE){IN1_OT=IN1_NT;IN1_NT=0;}
+                if(IN2_PRESS || IN2_LEASE){IN2_OT=IN2_NT;IN2_NT=0;}
+                #endif
+  20   1      }
+  21          #endif
+  22          
+  23          #ifdef DEF_YK_SCANF
+  24          bit YK1_L,YK1_Now;
+  25          bit YK2_L,YK2_Now;
+  26          bit YK3_L,YK3_Now;
+  27          bit YK4_L,YK4_Now;
+  28          void Scan_RF(){
+  29   1      ////  switch(Get_Key()){
+  30   1      ////    case 1: YK1=0;YK2=1;YK3=1;YK4=1; break;
+  31   1      ////    case 2: YK1=1;YK2=0;YK3=1;YK4=1; break;
+  32   1      ////    case 3: YK1=1;YK2=1;YK3=0;YK4=1; break;
+  33   1      ////    case 4: YK1=1;YK2=1;YK3=1;YK4=0; break;
+  34   1      ////    default: YK1=1;YK2=1;YK3=1;YK4=1; break;
+  35   1      ////  }
+  36   1        YK1_L = YK1_Now;  YK1_Now = YK1;//检测输入 
+  37   1        YK2_L = YK2_Now;  YK2_Now = YK2;//检测输入 
+  38   1        YK3_L = YK3_Now;  YK3_Now = YK3;//检测输入 
+  39   1        YK4_L = YK4_Now;  YK4_Now = YK4;//检测输入 
+  40   1      }
+  41          #endif
+  42          
+  43          
+  44          #ifdef DEF_KEY_SCANF
+  45          bit KEY1 ,KEY_1;
+  46          bit KEY2 ,KEY_2;
+  47          bit KEY3 ,KEY_3;
+  48          bit KEY4 ,KEY_4;
+  49          #if USE_KEY_TICK
+              uint xdata KEY1_NT,KEY1_OT;
+              uint xdata KEY2_NT,KEY2_OT;
+              uint xdata KEY3_NT,KEY3_OT;
+C51 COMPILER V9.59.0.0   SCANF                                                             03/03/2021 16:20:05 PAGE 2   
+
+              uint xdata KEY4_NT,KEY4_OT;
+              #endif
+  55          void Scanf_KEY(){
+  56   1        KEY_1 = KEY1; KEY1 =K1;
+  57   1        KEY_2 = KEY2; KEY2 =K2;
+  58   1        KEY_3 = KEY3; KEY3 =K3;
+  59   1        KEY_4 = KEY4; KEY4 =K4;
+  60   1        
+  61   1        
+  62   1        #if USE_KEY_TICK
+                if(KEY1_NT<60000)KEY1_NT++;
+                if(KEY2_NT<60000)KEY2_NT++;
+                if(KEY3_NT<60000)KEY3_NT++;
+                if(KEY4_NT<60000)KEY4_NT++;
+                if(K1_PRESS || K1_LEASE){KEY1_OT=KEY1_NT;KEY1_NT=0;}
+                if(K2_PRESS || K2_LEASE){KEY2_OT=KEY2_NT;KEY2_NT=0;}
+                if(K3_PRESS || K3_LEASE){KEY3_OT=KEY3_NT;KEY3_NT=0;}
+                if(K4_PRESS || K4_LEASE){KEY4_OT=KEY4_NT;KEY4_NT=0;}
+                #endif
+  72   1      }
+  73          #endif
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     83    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =     20    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

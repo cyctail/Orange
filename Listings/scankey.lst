@@ -1,0 +1,79 @@
+C51 COMPILER V9.59.0.0   SCANKEY                                                           03/03/2021 16:23:05 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SCANKEY
+OBJECT MODULE PLACED IN .\OBJ\scankey.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE USER\Scankey\scankey.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.
+                    -\USER;.\LIB\Data;.\LIB\eeprom;.\LIB\FunctionOS;.\LIB\OSAL;.\LIB\Scan;.\LIB\SEG;.\LIB\Tick;.\LIB\H;.\LIB\M_IO;.\LIB\M_Mat
+                    -h;.\LIB\DATAST;.\LIB\IIC;.\USER\Mode;.\USER\Scankey;.\USER\Main;.\LIB\SYS) DEBUG OBJECTEXTEND PRINT(.\Listings\scankey.l
+                    -st) TABS(2) OBJECT(.\OBJ\scankey.obj)
+
+line level    source
+
+   1          
+   2          #include "scankey.h"
+   3          
+   4          #define SINT uint
+   5          #define S_ADD 1
+   6          #define S_DEL 0
+   7          SINT SET_NUM(SINT now_num,SINT MAX_NUN,SINT MIN_NUM,SINT ADD_NUM,uchar AOD){
+   8   1        switch(AOD){
+   9   2          case S_ADD: if(now_num<=(MAX_NUN-ADD_NUM)){now_num+=ADD_NUM;}else{now_num=MIN_NUM;} break;
+  10   2          case S_DEL: if(now_num>=(MIN_NUM+ADD_NUM)){now_num-=ADD_NUM;}else{now_num=MAX_NUN;} break;
+  11   2        }
+  12   1        return now_num;
+  13   1      }
+  14          
+  15          
+  16          uchar K1_Long_Press;
+  17          void Scankey(void){
+  18   1        if(K1_KEEP_PRESS){
+  19   2          if(++K1_Long_Press>10){
+  20   3            Set_W=MODE_USE;
+  21   3          }
+  22   2        }else K1_Long_Press=0;
+  23   1        
+  24   1        if(K1_PRESS && Set_W>0){
+  25   2          Set_W=SET_NUM(Set_W,TIME_NUM+1,0,1,S_ADD);
+  26   2          if(Set_W==0){DATA_SAVE_FLAG=1;}
+  27   2        }
+  28   1        
+  29   1        if(K2_KEEP_PRESS){
+  30   2          switch(Set_W){
+  31   3            case 0: break;
+  32   3            case 1: Mode=SET_NUM(Mode,MODE_NUM,1,1,S_ADD); break;
+  33   3            default:time_x[Set_W-1]=SET_NUM(time_x[Set_W-1],999,0,1,S_ADD); break;
+  34   3          }
+  35   2        }
+  36   1        
+  37   1        if(K3_KEEP_PRESS){
+  38   2          switch(Set_W){
+  39   3            case 0: break;
+  40   3            case 1: Mode=SET_NUM(Mode,MODE_NUM,1,1,S_DEL); break;
+  41   3            default:time_x[Set_W-1]=SET_NUM(time_x[Set_W-1],999,0,1,S_DEL); break;
+  42   3          }
+  43   2        }
+  44   1        if(K4_PRESS){
+  45   2          switch(Set_W){
+  46   3            case 0: LED_ONF=SET_NUM(LED_ONF,1,0,1,S_ADD);DATA_SAVE_FLAG=1; break;
+  47   3            case 1: break;
+  48   3            default:flag_x[Set_W-1]=SET_NUM(flag_x[Set_W-1],3,0,1,S_ADD); break;
+  49   3          }
+  50   2        }
+  51   1      }
+
+C51 COMPILER V9.59.0.0   SCANKEY                                                           03/03/2021 16:23:05 PAGE 2   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    379    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

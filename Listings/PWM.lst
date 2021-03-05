@@ -1,0 +1,108 @@
+C51 COMPILER V9.57.0.0   PWM                                                               08/15/2020 18:26:50 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\OBJ\PWM.obj
+COMPILER INVOKED BY: D:\sofeware\keil 5\C51\BIN\C51.EXE LIB\PWM.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\LIB) DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\PWM.lst) TABS(2) OBJECT(.\OBJ\PWM.obj)
+
+line level    source
+
+   1          /*2018.5.18
+   2          频率 ：1HZ～150KHZ可调。占空比：0到100% 百分之一可调
+   3          STC8F2K08S2-SSOP20
+   4          启用STC8A8K系列中的高精度PWM模块+TIMER2作为分频器，未使用中断
+   5          
+   6          2018.5.25
+   7          改用STC8A8K64S4A12-LQFP48
+   8          启用STC8A8K系列中的15bit增强型PWM模块+TIMER2作为分频器，未使用中断
+   9          */
+  10          
+  11          #include "PWM.h"
+  12          #include "INTRINS.H"
+  13          
+  14          unsigned char dute=50;
+  15          unsigned long freq=1*1000;
+  16          
+  17          #define EE P_SW2|=0x80  //使能访问XSFR
+  18          #define ED P_SW2&=~0x80 //禁能访问XSFR
+  19          
+  20          void PWM_init(void)
+  21          {  
+  22   1          //定时器2固定为16位自动重载
+  23   1          AUXR&=~8;//定时器
+  24   1          AUXR|=4;//1T模式
+  25   1        //  INTCLKO=4;//开启时钟输出(P1.3输出) 
+  26   1          T2L=65536-1000;T2H=(65536-1000)>>8;
+  27   1      
+  28   1          PWMCFG = 0x00;                  //配置PWM的输出初始电平为低电平
+  29   1          P2M0=P2M1=0;//设置为输出脚
+  30   1        
+  31   1          EE;  
+  32   1          PWMCKS = 0x10;                  //选择PWM的时钟为T2溢出率（该寄存器分频无效）
+  33   1          PWMC = 1000;                    //设置PWM周期
+  34   1          PWM0T1=0x0000;                  //设置PWM2第1次反转的PWM计数
+  35   1          PWM0T2=SYS_FREQ/27000 * 50 / 100;      //设置PWM2第2次反转的PWM计数
+  36   1                                          //占空比为(PWM0T2-PWM0T1)/PWMC
+  37   1          PWM0CR =0x80; //输出使能，初始低电平,禁用中断
+  38   1          ED;            
+  39   1          
+  40   1        //  PWMCR = 0x80;                  //使能PWM模块
+  41   1        PWMCR = 0xc0;  
+  42   1          AUXR|=0x10;                     //启动定时器2
+  43   1      }
+  44          
+  45          /*=====================================================
+  46          Description:
+  47          function:
+  48          input   :
+  49          output  :
+  50          return  :
+  51          note    :
+  52          =====================================================*/
+  53          unsigned  long PWM_set(unsigned long fr,unsigned int du)
+  54          {
+C51 COMPILER V9.57.0.0   PWM                                                               08/15/2020 18:26:50 PAGE 2   
+
+  55   1          unsigned long div;
+  56   1          if(du==0 || du>=100)
+  57   1          {   EE;PWM0CR =0x00;ED;
+  58   2              if(du==0) {P20=0;}
+  59   2              else {P20=1;du=100;}
+  60   2          }
+  61   1          else
+  62   1          {
+  63   2      //        div=SYS_FREQ/fr;
+  64   2      //        if(div<65536/2)
+  65   2      //        {
+  66   2      //            EE;PWMCKS = 0x00; ED;
+  67   2      //        }
+  68   2      //        else
+  69   2          {
+  70   3              div=(fr<10)?1000:100;
+  71   3              T2L=65536-div;T2H=(65536-div)>>8;
+  72   3              EE; PWMCKS = 0x10; ED;
+  73   3              div=(SYS_FREQ/div)/fr;
+  74   3          }
+  75   2          EE;
+  76   2          PWMC=div;   
+  77   2          //PWM0T2=div*(1000-du)/1000;
+  78   2          PWM0T2=div*(100-du)/100;
+  79   2          PWM0CR =0x80;
+  80   2          ED;
+  81   2          }  return 1;
+  82   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    310    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5      10
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

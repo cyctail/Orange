@@ -1,0 +1,106 @@
+C51 COMPILER V9.60.0.0   MUART                                                             10/28/2020 11:26:59 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MUART
+OBJECT MODULE PLACED IN .\OBJ\muart.obj
+COMPILER INVOKED BY: D:\sofeware\Keil\Keil5_MDK\C51\BIN\C51.EXE LIB\Mine_UART\muart.c OPTIMIZE(9,SPEED) BROWSE INCDIR(.\
+                    -USER;.\LIB\H;.\LIB\eeprom;.\LIB\encoder;.\LIB\Mode;.\LIB\motostep;.\LIB\OSAL;.\LIB\PWM;.\LIB\RF;.\LIB\Scan;.\LIB\Scankey
+                    -;.\LIB\SEG;.\LIB\Tick;.\LIB\UART1;.\LIB\Data;.\LIB\FunctionOS;.\LIB\Mine_UART) DEBUG OBJECTEXTEND PRINT(.\Listings\muart
+                    -.lst) TABS(2) OBJECT(.\OBJ\muart.obj)
+
+line level    source
+
+   1          
+   2          #include "main.h"
+   3          
+   4          
+   5          bit UART_REFLAG=0;      //������ɱ�־λ
+   6          uchar xdata re_data[UART_R_num]={0};    //�������ݴ洢����
+   7          /*单字节数据头接收*/
+   8          //#define UART_HEAD '*'
+   9          //#define UART_TAIL '#'
+  10          //uchar UART_AS=255;
+  11          //void UART_Analysis(uchar gbuf){
+  12          //  if(UART_TAIL==gbuf){UART_AS=255;UART_REFLAG=1;}
+  13          //  if(gbuf!=UART_HEAD && UART_AS<255){
+  14          //    re_data[UART_AS++]=gbuf;
+  15          //  }
+  16          //  if(UART_HEAD==gbuf && UART_REFLAG==0)UART_AS=0;
+  17          //}
+  18          
+  19          
+  20          /**/
+  21          void cls_buf(){
+  22   1        uchar cls_i;
+  23   1        for(cls_i=0;cls_i<UART_R_num;cls_i++){
+  24   2          re_data[cls_i]=0;
+  25   2        }
+  26   1        UART_REFLAG=0;
+  27   1      }
+  28          /*多字节数据头接收*/
+  29          #define THEAD_LENGHT 3
+  30          uchar UART_THEAD[THEAD_LENGHT] = {'S','T','>'};
+  31          #define UART_TTAIL1 '\r'  //数据结束可能是'\r\n'，也有可能是'\n'
+  32          #define UART_TTAIL2 '\n'  //只要检测到一个就停止
+  33          uchar UART_HEAD_STAT=0;
+  34          uchar UART_RET_STAT=0;
+  35          bit UART_R_NY=0;
+  36          void UART_Analysis(uchar gbuf){   
+  37   1        if(UART_R_NY){    //已接收正确得数据头，允许接收数据和结束位
+  38   2          if((gbuf == UART_TTAIL1 || gbuf == UART_TTAIL2) && UART_R_NY){UART_HEAD_STAT=0;UART_R_NY=0;UART_REFLAG=1
+             -;re_data[UART_RET_STAT]='#';UART_RET_STAT=0;}   //接收数据结束位
+  39   2          else re_data[UART_RET_STAT++] = gbuf;   //接收数据
+  40   2        }
+  41   1        
+  42   1        if(UART_THEAD[UART_HEAD_STAT++] == gbuf){   //接收数据头
+  43   2          if(UART_HEAD_STAT==THEAD_LENGHT){cls_buf();UART_HEAD_STAT=0;UART_R_NY=1;}//接收到正确得数据头�
+             -�清除数组并开启数据接收
+  44   2        }else UART_HEAD_STAT=0;
+  45   1      }
+  46          
+  47          
+  48          /*数据解析*/
+  49          uchar xdata UFunc[10]={0};      //第一组数据
+  50          uchar xdata UData_JC[10]={0};   //暂存第二组数据的值
+C51 COMPILER V9.60.0.0   MUART                                                             10/28/2020 11:26:59 PAGE 2   
+
+  51          ulong xdata UData = 0;          //第二组数据最后计算的值
+  52          uchar Analysisi_Data(uchar anls[]){
+  53   1        uchar A_D_num=0,A_SD_num=0,ais;
+  54   1        ulong cs=1;   //
+  55   1        
+  56   1        while(anls[A_D_num] != '='){    //找到第一个分隔符，获得第一组数据
+  57   2          UFunc[A_D_num]=anls[A_D_num];
+  58   2          if(++A_D_num>=10)return 0;    //数据设限，避免死循环
+  59   2        }A_D_num++;
+  60   1        
+  61   1        while(anls[A_D_num]!='#'){      //找到数据停止位，获得第二组数据
+  62   2          UData_JC[A_SD_num] = anls[A_D_num];
+  63   2          A_D_num++;
+  64   2          if(++A_SD_num>=10)return 0;   //数据设限，避免死循环
+  65   2        }
+  66   1        
+  67   1        UData=0;
+  68   1        for(ais=A_SD_num;ais>0;ais--){    //转换第二组数据成数值
+  69   2          if(UData_JC[ais-1]>=(0+'0') && UData_JC[ais-1]<=(9+'0')){ //判断数据是否在正确范围
+  70   3            UData+=(UData_JC[ais-1]-'0')*cs;    //计算各位置对应数值，从个位开始
+  71   3            cs=cs*10;
+  72   3          }else return 0;
+  73   2        }
+  74   1        
+  75   1        return 1;
+  76   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    401    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     74    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5      10
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
