@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "main.h": "c",
-        "m_head.h": "c",
-        "data.h": "c",
-        "eeprom.h": "c",
-        "hard_description.h": "c"
-    }
-}
